@@ -178,9 +178,13 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
 
 
-CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000', 'http://127.0.0.1:3000', 'https://domain.com...']
+# CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000', 'http://127.0.0.1:3000', 'https://domain.com...']
 
-CORS_ALLOWED_METHODS = ['POST', 'GET', 'PUT', 'PATCH', '...']
+# CORS_ALLOWED_METHODS = ['POST', 'GET', 'PUT', 'PATCH', '...']
+CORS_ALLOW_HEADERS = ['Authorization', 'Content-Type']
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
 
 SWAGGER_SETTINGS = {
