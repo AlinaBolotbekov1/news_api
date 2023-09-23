@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     #apps
     'account',
     'news',
+    'my_reviews',
+    'pass_reviews'
     
 ]
 
