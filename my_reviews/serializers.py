@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError, ReadOnlyField
-from .models import Like, Comment, Rating
+from .models import Like, Comment, Rating, Favorite
+from news import serializers as NewsListSerializer
 
 
 
@@ -13,7 +14,6 @@ class CommentSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('request').user
-        print(user)
         comment = Comment.objects.create(author=user, **validated_data)
         return comment
 
@@ -32,11 +32,11 @@ class RatingSerializer(ModelSerializer):
             'Рейтинг должен быть от 1 до 10'
         )
 
-    def validate_news_kg(self, news):
+    def validate_news(self, news):
         user = self.context.get('request').user
         if self.Meta.model.objects.filter(news=news, author=user).exists():
             raise ValidationError(
-                'Вы уже оставляли отзыв на данный news.kg'
+                'Вы уже оставляли отзыв на данную новость'
             )
         return news
     
@@ -47,7 +47,7 @@ class RatingSerializer(ModelSerializer):
 
 class LikeSerializer(ModelSerializer):
     author = ReadOnlyField(source='author.email')
-    news_kg = ReadOnlyField()
+    news = ReadOnlyField()
 
     class Meta:
         model = Like
@@ -59,4 +59,24 @@ class LikeSerializer(ModelSerializer):
 
 
 
+class FavoriteListSerializer(ModelSerializer):
+    news = NewsListSerializer
+    
 
+    class Meta:
+        model = Favorite
+        fields = ['news']
+       
+
+
+class FavoriteDetailSerializer(ModelSerializer):
+    author = ReadOnlyField(source='author.email')
+
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        return self.Meta.model.objects.create(author=user, **validated_data)

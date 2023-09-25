@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'account',
     'news',
     'my_reviews',
-    'pass_reviews'
+    'video',
     
 ]
 

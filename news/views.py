@@ -4,8 +4,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from bs4 import BeautifulSoup
-import requests
+from rest_framework.decorators import action
+from my_reviews.serializers import LikeSerializer
+from my_reviews.models import Like
+from rest_framework.response import Response
 
 class PermissionMixin:
     def get_permissions(self):
@@ -36,3 +38,19 @@ class NewsView(PermissionMixin,ModelViewSet):
         else:
             return self.serializer_class
     
+
+
+    @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    def like(self, request, pk=None):
+        news = self.get_object()
+        user = request.user
+        serializer = LikeSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            try:
+                like = Like.objects.get(news=news, author=user)
+                like.delete()
+                message = 'Unliked'
+            except Like.DoesNotExist:
+                Like.objects.create(news=news, author=user)
+                message = 'Liked'
+            return Response(message, status=200)

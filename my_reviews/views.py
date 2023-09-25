@@ -1,6 +1,6 @@
-from .models import Like, Comment, Rating
+from .models import Comment, Rating, Favorite
 from rest_framework.viewsets import ModelViewSet
-from .serializers import CommentSerializer, RatingSerializer
+from .serializers import CommentSerializer, RatingSerializer, FavoriteDetailSerializer, FavoriteListSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .peremissions import IsAuthorOrReadOnly
 
@@ -26,3 +26,13 @@ class RatingView(PermissionMixin, ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
 
+
+class FavoriteView(PermissionMixin, ModelViewSet):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteDetailSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return FavoriteListSerializer
+        else:
+            return self.serializer_class
